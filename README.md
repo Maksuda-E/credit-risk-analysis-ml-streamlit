@@ -1,42 +1,27 @@
-Credit Risk Analysis and Default Prediction
-Overview
+# Credit Risk Analysis and Default Prediction
 
-This project analyzes credit card customer data to predict the likelihood of payment default using machine learning. The goal is to help identify customers who may have difficulty repaying their credit card balance, allowing financial institutions to manage credit risk more effectively.
+## Overview
+This project analyzes credit card customer data to predict the likelihood of payment default using machine learning. The goal is to help identify customers who may have difficulty repaying their credit card balance, allowing financial institutions to manage credit risk more effectively. It follows a complete data science workflow including exploratory data analysis, data preprocessing, feature engineering, model training, model evaluation, and deployment using a Streamlit web application.
 
-The project follows a complete data science workflow including exploratory data analysis, data preprocessing, feature engineering, model training, model evaluation, and deployment using a Streamlit web application.
-
-Objectives
-
+## Objectives
 The main objectives of this project are:
+1. Analyze customer financial behavior and payment history
+2. Build a predictive model to estimate credit default risk
+3. Compare multiple machine learning models
+4. Deploy the best model in an interactive web application
 
-Analyze customer financial behavior and payment history
-
-Build a predictive model to estimate credit default risk
-
-Compare multiple machine learning models
-
-Deploy the best model in an interactive web application
-
-Dataset
-
+## Dataset
 The dataset contains information about credit card customers including:
+- Credit limit
+- Age
+- Payment status history
+- Bill amounts
+- Payment amounts
+- Education and marital status
 
-Credit limit
+## The target variable indicates whether the customer defaulted on the next payment.
 
-Age
-
-Payment status history
-
-Bill amounts
-
-Payment amounts
-
-Education and marital status
-
-The target variable indicates whether the customer defaulted on the next payment.
-
-Project Workflow
-
+## Project Workflow
 The project is divided into several stages:
 
 1. Exploratory Data Analysis (EDA)
@@ -47,59 +32,59 @@ Initial analysis was performed to understand the structure and distribution of t
 
 Data preprocessing steps included:
 
-Removing unnecessary columns
+- Removing unnecessary columns
 
-Checking and handling missing values
+- Checking and handling missing values
 
-Encoding categorical variables
+- Encoding categorical variables
 
-Preparing the dataset for machine learning models
+- Preparing the dataset for machine learning models
 
 3. Feature Engineering
 
-Additional features were created to improve model performance, such as:
+- Additional features were created to improve model performance, such as:
 
-Average bill amount
+- Average bill amount
 
-Average payment amount
+- Average payment amount
 
-Total delay months
+- Total delay months
 
-Maximum delay
+- Maximum delay
 
-Credit utilization ratio
+- Credit utilization ratio
 
-Payment ratio
+- Payment ratio
 
-These features help capture customer financial behavior more effectively.
+- These features help capture customer financial behavior more effectively.
 
 4. Model Training
 
 Multiple classification models were trained and compared:
 
-Logistic Regression
+1. Logistic Regression
 
-Decision Tree
+2. Decision Tree
 
-Random Forest
+3. Random Forest
 
-5. Model Evaluation
+## Model Evaluation
 
 Models were evaluated using several performance metrics:
 
-Accuracy
+- Accuracy
 
-Precision
+- Precision
 
-Recall
+- Recall
 
-F1-score
+- F1-score
 
-Confusion Matrix
+- Confusion Matrix
 
 Among the tested models, Random Forest achieved the best overall performance with approximately 82% accuracy.
 
-6. Model Deployment
+## Model Deployment
 
 The best model was deployed using Streamlit, allowing users to input customer information and receive a prediction of default risk.
 
@@ -111,21 +96,21 @@ Feature importance visualization
 
 Error handling and logging
 
-Streamlit Application
+## Streamlit Application
 
 The Streamlit app allows users to:
 
-Enter customer financial information
+1. Enter customer financial information
 
-Predict default risk
+2. Predict default risk
 
-View prediction probability
+3. View prediction probability
 
-See important features influencing the model
+4. See important features influencing the model
 
 This makes the model easier to interact with and demonstrates a practical use case for credit risk prediction.
 
-Technologies Used
+## Technologies Used
 
 Python
 
