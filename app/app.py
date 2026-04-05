@@ -109,7 +109,6 @@ st.markdown(
         text-align: center;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
         margin-top: 2rem;
-        margin-bottom: 0.5rem;
     }
 
     .side-label {
