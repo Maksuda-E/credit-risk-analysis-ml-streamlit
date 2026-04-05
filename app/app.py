@@ -17,8 +17,17 @@ st.markdown(  # inject custom CSS for dark theme and improved layout
     """
     <style>
     .stApp {
-        background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
+        background: linear-gradient(180deg, #0b1220 0%, #1f3864 100%);
         color: #e5e7eb;
+    }
+    /* hide top header bar */
+    header[data-testid="stHeader"] {
+    display: none;
+    }
+
+    /* remove top spacing after hiding header */
+    .block-container {
+    padding-top: 1rem;
     }
 
     .main .block-container {
