@@ -346,7 +346,7 @@ if predict_btn:
                 unsafe_allow_html=True
             )
             interpretation_placeholder.markdown("**Risk Interpretation:** This customer appears to have relatively low default risk.")
-        elif probability < 0.80:
+        elif probability < 0.65:
             result_placeholder.markdown(
                 f'<div class="result-box result-medium">Customer appears to have moderate default risk<br>Default probability: {probability:.2%}</div>',
                 unsafe_allow_html=True
