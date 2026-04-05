@@ -143,8 +143,6 @@ with left:
         AVG_UTILIZATION = st.slider("Credit Utilization", 0.0, 1.0, 0.3)
         PAYMENT_RATIO = st.slider("Payment Ratio", 0.0, 2.0, 0.5)
 
-    st.markdown('</div>', unsafe_allow_html=True)
-
 # right column for categorical inputs and button
 with right:
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
