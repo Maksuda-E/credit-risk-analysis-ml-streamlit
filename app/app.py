@@ -462,15 +462,10 @@ st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 # cache model loading for performance
 @st.cache_resource
 def get_model_and_assets(model_path_arg, features_path_arg, scaler_path_arg):
-    # load model and feature names using utils.py
-    loaded_model, loaded_features = load_model(model_path_arg, features_path_arg)
+    model, feature_names, scaler = load_model(model_path_arg, features_path_arg, scaler_path_arg)
+    return model, feature_names, scaler
 
-    # load scaler if available
-    loaded_scaler = load_scaler_if_available(scaler_path_arg)
-
-    # return model, features, and optional scaler
-    return loaded_model, loaded_features, loaded_scaler
-
+model, feature_names, scaler = get_model_and_assets(model_path, features_path, scaler_path)
 
 # try to load model, features, and scaler safely
 try:
