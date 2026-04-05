@@ -1,30 +1,27 @@
-# import logging module to record errors and system messages
-import logging
+import os  # import os to work with file and folder paths
+import logging  # import logging to create application logs
+from datetime import datetime  # import datetime to create timestamped log filenames
 
-# import os to create a folder for log files
-import os
-
-# import datetime to include date and time in log file names
-from datetime import datetime
-
-# define a function to configure the logger
 def setup_logger():
+    log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")  # build the logs folder path from the app folder
+    os.makedirs(log_dir, exist_ok=True)  # create the logs folder if it does not already exist
 
-    # create a folder named logs if it does not exist
-    os.makedirs("../logs", exist_ok=True)
+    logger = logging.getLogger("credit_risk_app")  # create or get a named logger for the app
+    logger.setLevel(logging.INFO)  # set the logger level so info, warning, error, and critical messages are captured
 
-    # generate a log file name using current date and time
-    log_filename = datetime.now().strftime("error_log_%Y_%m_%d_%H_%M_%S.log")
+    if logger.handlers:  # check whether handlers were already added to avoid duplicate log lines
+        return logger  # return the existing logger if already configured
 
-    # combine the folder path and file name
-    log_path = os.path.join("../logs", log_filename)
+    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")  # create a timestamp string for the log filename
+    log_file = os.path.join(log_dir, f"error_log_{timestamp}.log")  # create the full log file path
 
-    # configure logging settings such as file location and message format
-    logging.basicConfig(
-        filename=log_path,
-        level=logging.ERROR,
-        format="%(asctime)s - %(levelname)s - %(message)s"
-    )
+    file_handler = logging.FileHandler(log_file, encoding="utf-8")  # create a file handler that writes logs to the file
+    file_handler.setLevel(logging.INFO)  # allow info and above messages to be written to file
 
-    # return the configured logger
-    return logging
+    formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")  # define how each log line should look
+    file_handler.setFormatter(formatter)  # apply the formatter to the file handler
+
+    logger.addHandler(file_handler)  # attach the file handler to the logger
+    logger.propagate = False  # stop logs from being duplicated by parent loggers
+
+    return logger  # return the configured logger
