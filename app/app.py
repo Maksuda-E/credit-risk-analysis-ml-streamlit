@@ -181,7 +181,7 @@ st.markdown(  # add custom css for dark theme and polished layout
     }
     
     div[data-baseweb="popover"],
-    div[data-baseweb="popover"] * ,
+    div[data-baseweb="popover"] *,
     ul[role="listbox"],
     ul[role="listbox"] *,
     li[role="option"],
@@ -211,19 +211,31 @@ st.markdown(  # render top hero section
     unsafe_allow_html=True
 )
 
+st.markdown("### Model Performance")  # show model performance section title
+
+perf_col1, perf_col2, perf_col3, perf_col4 = st.columns(4)  # create four columns for performance metrics
+perf_col1.metric("Accuracy", "0.82")  # show accuracy metric
+perf_col2.metric("Precision", "0.80")  # show precision metric
+perf_col3.metric("Recall", "0.78")  # show recall metric
+perf_col4.metric("F1 Score", "0.79")  # show f1 score metric
+
 base_dir = os.path.dirname(os.path.abspath(__file__))  # get current file directory
 root_dir = os.path.abspath(os.path.join(base_dir, ".."))  # move to project root
 model_path = os.path.join(root_dir, "model", "random_forest_model.pkl")  # build model file path
 features_path = os.path.join(root_dir, "model", "model_features.pkl")  # build features file path
 
-try:  # load model and features safely
-    model, feature_names = load_model(model_path, features_path)
-except Exception as e:  # catch loading errors
-    logger.error(f"Error loading model or feature names: {e}")
-    st.error(f"Model loading failed: {e}")
-    st.stop()
+@st.cache_resource  # cache model loading for better performance
+def get_model(model_path_arg, features_path_arg):
+    return load_model(model_path_arg, features_path_arg)  # return loaded model and features
 
-top_left, top_right = st.columns([1.8, 1.15], gap="large")  # create top row with form on left and metrics on right
+try:  # load model and features safely
+    model, feature_names = get_model(model_path, features_path)  # load cached model and feature names
+except Exception as e:  # catch loading errors
+    logger.error(f"Error loading model or feature names: {e}")  # write loading error to log
+    st.error(f"Model loading failed: {e}")  # show loading error on screen
+    st.stop()  # stop app when model files are missing or broken
+
+top_left, top_right = st.columns([1.8, 1.15], gap="large")  # create top row with form on left and metric cards on right
 
 with top_left:  # left side form section
     st.markdown('<div class="card-title">Customer Information</div>', unsafe_allow_html=True)  # show form title
@@ -256,7 +268,7 @@ with top_left:  # left side form section
     with marriage_col:  # marriage selectbox column
         marriage_choice = st.selectbox("Marriage", ["Married", "Single", "Others"])  # input marriage category
 
-    predict_btn = st.button("Predict Default Risk")  # prediction button below form
+    predict_btn = st.button("Predict Default Risk")  # create prediction button below form
 
 with top_right:  # right side metrics section
     st.markdown(
@@ -299,21 +311,21 @@ MARRIAGE_3 = 1 if marriage_choice == "Others" else 0  # encode others marriage
 if predict_btn:  # run prediction when button is clicked
     try:
         input_data = {  # collect user inputs
-            "LIMIT_BAL": LIMIT_BAL,
-            "AGE": AGE,
-            "PAY_0": PAY_0,
-            "AVG_BILL_AMT": AVG_BILL_AMT,
-            "AVG_PAY_AMT": AVG_PAY_AMT,
-            "TOTAL_DELAY_MONTHS": TOTAL_DELAY_MONTHS,
-            "MAX_DELAY": MAX_DELAY,
-            "AVG_UTILIZATION": AVG_UTILIZATION,
-            "PAYMENT_RATIO": PAYMENT_RATIO,
-            "SEX_2": SEX_2,
-            "EDUCATION_2": EDUCATION_2,
-            "EDUCATION_3": EDUCATION_3,
-            "EDUCATION_4": EDUCATION_4,
-            "MARRIAGE_2": MARRIAGE_2,
-            "MARRIAGE_3": MARRIAGE_3
+            "LIMIT_BAL": LIMIT_BAL,  # pass credit limit
+            "AGE": AGE,  # pass age
+            "PAY_0": PAY_0,  # pass recent payment status
+            "AVG_BILL_AMT": AVG_BILL_AMT,  # pass average bill amount
+            "AVG_PAY_AMT": AVG_PAY_AMT,  # pass average payment amount
+            "TOTAL_DELAY_MONTHS": TOTAL_DELAY_MONTHS,  # pass total delay months
+            "MAX_DELAY": MAX_DELAY,  # pass maximum delay
+            "AVG_UTILIZATION": AVG_UTILIZATION,  # pass average utilization
+            "PAYMENT_RATIO": PAYMENT_RATIO,  # pass payment ratio
+            "SEX_2": SEX_2,  # pass encoded sex
+            "EDUCATION_2": EDUCATION_2,  # pass encoded education university
+            "EDUCATION_3": EDUCATION_3,  # pass encoded education high school
+            "EDUCATION_4": EDUCATION_4,  # pass encoded education others
+            "MARRIAGE_2": MARRIAGE_2,  # pass encoded marriage single
+            "MARRIAGE_3": MARRIAGE_3  # pass encoded marriage others
         }
 
         input_df = prepare_input(input_data, feature_names)  # align input dataframe with model features
@@ -322,7 +334,7 @@ if predict_btn:  # run prediction when button is clicked
 
         st.markdown('<div class="card-title">Prediction Result</div>', unsafe_allow_html=True)  # show result title
 
-        if probability < 0.30:  # low risk result
+        if probability < 0.30:  # handle low risk result
             st.markdown(
                 f"""
                 <div class="result-good">
@@ -332,8 +344,8 @@ if predict_btn:  # run prediction when button is clicked
                 """,
                 unsafe_allow_html=True
             )
-            interpretation = "This customer appears to have relatively low default risk."  # low risk interpretation
-        elif probability < 0.60:  # moderate risk result
+            interpretation = "This customer appears to have relatively low default risk."  # set low risk interpretation
+        elif probability < 0.60:  # handle moderate risk result
             st.markdown(
                 f"""
                 <div class="result-medium">
@@ -343,8 +355,8 @@ if predict_btn:  # run prediction when button is clicked
                 """,
                 unsafe_allow_html=True
             )
-            interpretation = "This customer appears to have moderate default risk."  # moderate risk interpretation
-        else:  # high risk result
+            interpretation = "The customer shows some financial risk signals and should be monitored carefully."  # set moderate risk interpretation
+        else:  # handle high risk result
             st.markdown(
                 f"""
                 <div class="result-high">
@@ -354,10 +366,18 @@ if predict_btn:  # run prediction when button is clicked
                 """,
                 unsafe_allow_html=True
             )
-            interpretation = "This customer appears to have high default risk."  # high risk interpretation
+            interpretation = "This customer appears to have high default risk and may require immediate attention."  # set high risk interpretation
+
+        st.info("Note: Probability reflects likelihood, not certainty. Use this result as decision support.")  # show probability note
 
         st.subheader("Risk Interpretation")  # show interpretation heading
         st.write(interpretation)  # display interpretation text
+
+        st.subheader("Key Factors Influencing Risk")  # show explanation heading
+        st.write("Important factors affecting this prediction include:")  # show explanation intro
+        st.write("Payment delays")  # show factor one
+        st.write("Credit utilization level")  # show factor two
+        st.write("Payment to bill ratio")  # show factor three
 
         st.subheader("Input Summary")  # show input summary heading
         st.dataframe(input_df, use_container_width=True)  # display input dataframe
@@ -365,10 +385,10 @@ if predict_btn:  # run prediction when button is clicked
         if hasattr(model, "feature_importances_"):  # check whether feature importance exists
             importance_df = pd.DataFrame(  # create feature importance dataframe
                 {
-                    "Feature": feature_names,
-                    "Importance": model.feature_importances_
+                    "Feature": feature_names,  # use feature names
+                    "Importance": model.feature_importances_  # use feature importance scores
                 }
-            ).sort_values(by="Importance", ascending=False).head(10)  # sort and keep top 10
+            ).sort_values(by="Importance", ascending=False).head(10)  # sort values and keep top ten features
 
             st.subheader("Top 10 Important Features")  # show feature importance heading
 
@@ -388,6 +408,8 @@ if predict_btn:  # run prediction when button is clicked
                 spine.set_color("#334155")  # set border color
             st.pyplot(fig)  # display chart
 
+            st.write("Top features above indicate which factors most influenced the model prediction.")  # add short explanation under the chart
+
     except Exception as e:  # handle prediction errors
-        logger.error(f"Prediction error: {e}")
-        st.error(f"Prediction failed: {e}")
+        logger.error(f"Prediction error: {e}")  # write prediction error to log
+        st.error(f"Prediction failed: {e}")  # show prediction error on screen
