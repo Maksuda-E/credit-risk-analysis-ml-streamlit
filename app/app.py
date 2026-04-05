@@ -21,8 +21,13 @@ st.markdown(
         color: #e5e7eb;
     }
 
-    header[data-testid="stHeader"] {display: none;}
-    footer {visibility: hidden;}
+    header[data-testid="stHeader"] {
+        display: none;
+    }
+
+    footer {
+        visibility: hidden;
+    }
 
     .block-container {
         max-width: 1400px;
@@ -36,10 +41,10 @@ st.markdown(
 
     .hero-card {
         background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #38bdf8 100%);
-        border-radius: 18px;
+        border-radius: 26px;
         padding: 1rem 1.2rem;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.30);
-        margin-bottom: 1 rem;
+        margin-bottom: 1rem;
     }
 
     .hero-title {
@@ -105,10 +110,10 @@ st.markdown(
     .side-card {
         background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%);
         border-radius: 22px;
-        padding: 1rem 0.5rem;
+        padding: 0.9rem 0.7rem;
         text-align: center;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
     }
 
     .side-label {
@@ -163,6 +168,10 @@ st.markdown(
         margin-top: 0.6rem;
     }
 
+    .stButton > button:hover {
+        filter: brightness(1.08);
+    }
+
     .stNumberInput label,
     .stSelectbox label,
     .stSlider label {
@@ -178,7 +187,76 @@ st.markdown(
         color: #e5e7eb !important;
     }
 
-    input { color: #e5e7eb !important; }
+    input {
+        color: #e5e7eb !important;
+    }
+
+    .stSlider [data-baseweb="slider"] {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+    }
+
+    [data-testid="stAlert"] {
+        border-radius: 14px;
+    }
+
+    .summary-table-card {
+        background: linear-gradient(180deg, rgba(8, 22, 47, 0.96) 0%, rgba(12, 30, 58, 0.96) 100%);
+        border: 1px solid rgba(148, 163, 184, 0.16);
+        border-radius: 20px;
+        padding: 1rem 1rem 0.8rem 1rem;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+        margin-top: 0.5rem;
+        overflow-x: auto;
+    }
+
+    .summary-table-header {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #f8fafc;
+        margin-bottom: 0.85rem;
+        letter-spacing: 0.2px;
+    }
+
+    .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border-radius: 14px;
+    }
+
+    .summary-table thead tr {
+        background: linear-gradient(135deg, #1d4ed8 0%, #38bdf8 100%);
+    }
+
+    .summary-table th {
+        color: white;
+        text-align: left;
+        padding: 0.85rem 1rem;
+        font-size: 0.92rem;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .summary-table td {
+        padding: 0.8rem 1rem;
+        font-size: 0.92rem;
+        color: #e5e7eb;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+    }
+
+    .summary-table tbody tr:nth-child(odd) {
+        background: rgba(15, 23, 42, 0.72);
+    }
+
+    .summary-table tbody tr:nth-child(even) {
+        background: rgba(30, 41, 59, 0.52);
+    }
+
+    .summary-table tbody tr:hover {
+        background: rgba(37, 99, 235, 0.18);
+        transition: 0.2s ease;
+    }
 
     [data-testid="stDataFrame"] {
         background-color: #0f172a;
@@ -196,15 +274,24 @@ st.markdown(
         color: black !important;
     }
 
-    ul[role="listbox"], li[role="option"] {
+    ul[role="listbox"],
+    li[role="option"] {
         background: white !important;
+    }
+    /* Hide empty Streamlit blocks only */
+    section.main > div:empty {
+    display: none !important;
+    }
+
+    /* Fix empty columns */
+     div[data-testid="column"] > div:empty {
+    display: none !important;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# HERO
 st.markdown(
     """
     <div class="hero-card">
@@ -218,18 +305,31 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# PERFORMANCE SECTION
 st.markdown("### Model Performance")
+
 p1, p2, p3, p4 = st.columns(4, gap="medium")
 with p1:
-    st.markdown('<div class="perf-card"><div class="perf-label">Accuracy</div><div class="perf-value">0.82</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="perf-card"><div class="perf-label">Accuracy</div><div class="perf-value">0.82</div></div>',
+        unsafe_allow_html=True
+    )
 with p2:
-    st.markdown('<div class="perf-card"><div class="perf-label">Precision</div><div class="perf-value">0.80</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="perf-card"><div class="perf-label">Precision</div><div class="perf-value">0.80</div></div>',
+        unsafe_allow_html=True
+    )
 with p3:
-    st.markdown('<div class="perf-card"><div class="perf-label">Recall</div><div class="perf-value">0.78</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="perf-card"><div class="perf-label">Recall</div><div class="perf-value">0.78</div></div>',
+        unsafe_allow_html=True
+    )
 with p4:
-    st.markdown('<div class="perf-card"><div class="perf-label">F1 Score</div><div class="perf-value">0.79</div></div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="perf-card"><div class="perf-label">F1 Score</div><div class="perf-value">0.79</div></div>',
+        unsafe_allow_html=True
+    )
 
+st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(base_dir, ".."))
@@ -274,7 +374,10 @@ with main_left:
     with s1:
         sex_choice = st.selectbox("Sex", ["Male", "Female"])
     with s2:
-        education_choice = st.selectbox("Education", ["Graduate School", "University", "High School", "Others"])
+        education_choice = st.selectbox(
+            "Education",
+            ["Graduate School", "University", "High School", "Others"]
+        )
     with s3:
         marriage_choice = st.selectbox("Marriage", ["Married", "Single", "Others"])
 
@@ -338,46 +441,107 @@ if predict_btn:
         }
 
         input_df = prepare_input(input_data, feature_names)
+        prediction = model.predict(input_df)[0]
         probability = model.predict_proba(input_df)[0][1]
 
         if probability < 0.30:
             result_placeholder.markdown(
-                f'<div class="result-box result-good">Customer is not likely to default<br>Default probability: {probability:.2%}</div>',
+                f"""
+                <div class="result-box result-good">
+                    Customer is not likely to default<br>
+                    Default probability: {probability:.2%}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
-            interpretation_placeholder.markdown("**Risk Interpretation:** This customer appears to have relatively low default risk.")
+            interpretation = "This customer appears to have relatively low default risk."
         elif probability < 0.60:
             result_placeholder.markdown(
-                f'<div class="result-box result-medium">Customer appears to have moderate default risk<br>Default probability: {probability:.2%}</div>',
+                f"""
+                <div class="result-box result-medium">
+                    Customer appears to have moderate default risk<br>
+                    Default probability: {probability:.2%}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
-            interpretation_placeholder.markdown("**Risk Interpretation:** The customer shows some financial risk signals and should be monitored carefully.")
+            interpretation = "The customer shows some financial risk signals and should be monitored carefully."
         else:
             result_placeholder.markdown(
-                f'<div class="result-box result-high">Customer is likely to default<br>Default probability: {probability:.2%}</div>',
+                f"""
+                <div class="result-box result-high">
+                    Customer is likely to default<br>
+                    Default probability: {probability:.2%}
+                </div>
+                """,
                 unsafe_allow_html=True
             )
-            interpretation_placeholder.markdown("**Risk Interpretation:** This customer appears to have high default risk and may require immediate attention.")
+            interpretation = "This customer appears to have high default risk and may require immediate attention."
 
-        note_placeholder.info("Probability reflects likelihood, not certainty. Use this result as decision support.")
+        note_placeholder.info(
+            "Probability reflects likelihood, not certainty. Use this result as decision support."
+        )
+        interpretation_placeholder.markdown(f"**Risk Interpretation:** {interpretation}")
 
         st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
+        st.markdown("### Key Factors Influencing Risk")
+        st.write("Important factors affecting this prediction include:")
+        st.write("- Payment delays")
+        st.write("- Credit utilization level")
+        st.write("- Payment to bill ratio")
+
         st.markdown("### Input Summary")
-        st.dataframe(input_df, use_container_width=True)
+
+        summary_df = input_df.T.reset_index()
+        summary_df.columns = ["Feature", "Value"]
+
+        table_rows = "".join(
+            f"""
+            <tr>
+                <td>{row['Feature']}</td>
+                <td>{row['Value']}</td>
+            </tr>
+            """
+            for _, row in summary_df.iterrows()
+        )
+
+        st.markdown(
+            f"""
+            <div class="summary-table-card">
+                <div class="summary-table-header">Customer Input Overview</div>
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {table_rows}
+                    </tbody>
+                </table>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
         if hasattr(model, "feature_importances_"):
-            importance_df = pd.DataFrame({
-                "Feature": feature_names,
-                "Importance": model.feature_importances_
-            }).sort_values(by="Importance", ascending=False).head(10)
+            importance_df = pd.DataFrame(
+                {
+                    "Feature": feature_names,
+                    "Importance": model.feature_importances_
+                }
+            ).sort_values(by="Importance", ascending=False).head(10)
 
             st.markdown("### Top 10 Important Features")
 
             fig, ax = plt.subplots(figsize=(10, 5))
             ax.barh(importance_df["Feature"][::-1], importance_df["Importance"][::-1])
+
             ax.set_title("Top 10 Important Features")
             ax.set_xlabel("Importance Score")
             ax.set_ylabel("Feature")
+
             fig.patch.set_facecolor("#0f172a")
             ax.set_facecolor("#0f172a")
             ax.tick_params(axis="x", colors="#e5e7eb")
@@ -385,9 +549,12 @@ if predict_btn:
             ax.xaxis.label.set_color("#e5e7eb")
             ax.yaxis.label.set_color("#e5e7eb")
             ax.title.set_color("#f8fafc")
+
             for spine in ax.spines.values():
                 spine.set_color("#334155")
+
             st.pyplot(fig)
+            st.write("Top features above indicate which factors most influenced the model prediction.")
 
     except Exception as e:
         logger.error(f"Prediction error: {e}")
