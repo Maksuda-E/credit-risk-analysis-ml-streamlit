@@ -340,13 +340,13 @@ if predict_btn:
         input_df = prepare_input(input_data, feature_names)
         probability = model.predict_proba(input_df)[0][1]
 
-        if probability < 0.30:
+        if probability < 0.40:
             result_placeholder.markdown(
                 f'<div class="result-box result-good">Customer is not likely to default<br>Default probability: {probability:.2%}</div>',
                 unsafe_allow_html=True
             )
             interpretation_placeholder.markdown("**Risk Interpretation:** This customer appears to have relatively low default risk.")
-        elif probability < 0.60:
+        elif probability < 0.80:
             result_placeholder.markdown(
                 f'<div class="result-box result-medium">Customer appears to have moderate default risk<br>Default probability: {probability:.2%}</div>',
                 unsafe_allow_html=True
