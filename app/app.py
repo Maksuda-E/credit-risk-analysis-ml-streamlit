@@ -32,7 +32,7 @@ st.markdown(  # add custom css for dark theme and polished layout
     .block-container {
         max-width: 1380px;
         padding-top: 1rem;
-        padding-bottom: 6rem;
+        padding-bottom: 10rem;
     }
 
     h1, h2, h3, h4, h5, h6, p, label, div, span {
