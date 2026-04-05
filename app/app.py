@@ -179,14 +179,43 @@ st.markdown(  # add custom css for dark theme and polished layout
     [data-testid="stAlert"] {
         border-radius: 14px;
     }
-    /* Fix dropdown option text color */
-    div[data-baseweb="select"] ul li {
+   /* Closed select box */
+    div[data-baseweb="select"] > div {
+        background-color: #08162f !important;
+        border: 1px solid #334155 !important;
+        color: #e5e7eb !important;
+    }
+
+    /* Text inside closed select box */
+    div[data-baseweb="select"] span {
+        color: #e5e7eb !important;
+    }
+
+    /* Opened dropdown container */
+    div[data-baseweb="popover"] {
+        background: white !important;
+    }
+
+    /* Menu list */
+    ul[role="listbox"] {
+        background-color: white !important;
+    }
+
+    /* Each option */
+    ul[role="listbox"] li {
+        background-color: white !important;
         color: black !important;
     }
 
-    div[data-baseweb="menu"] li {
-    color: black !important;
-    background-color: white !important;
+    /* Option text */
+    ul[role="listbox"] li span {
+        color: black !important;
+    }
+
+    /* Highlighted or selected option */
+    ul[role="listbox"] li[aria-selected="true"] {
+        background-color: #f0f0f0 !important;
+        color: black !important;
     }
     </style>
     """,
