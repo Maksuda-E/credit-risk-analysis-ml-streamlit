@@ -102,17 +102,15 @@ with m3:
     </div>
     """, unsafe_allow_html=True)
 
-# locate current file directory
-current_dir = os.path.dirname(os.path.abspath(__file__))
+# get the folder where app.py is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# move to project root directory
-project_root = os.path.abspath(os.path.join(current_dir, ".."))
+# move one level up to project root
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
 
-# build model file path
-model_path = os.path.join(project_root, "model", "random_forest_model.pkl")
-
-# build feature file path
-features_path = os.path.join(project_root, "model", "model_features.pkl")
+# build correct paths to model files
+model_path = os.path.join(ROOT_DIR, "model", "random_forest_model.pkl")
+features_path = os.path.join(ROOT_DIR, "model", "model_features.pkl")
 
 # safely load model and features
 try:
