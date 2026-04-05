@@ -1,23 +1,23 @@
 import os  # import os for file path handling
 import streamlit as st  # import streamlit for app ui
-import pandas as pd  # import pandas for dataframe operations
-import matplotlib.pyplot as plt  # import matplotlib for plotting
+import pandas as pd  # import pandas for dataframe handling
+import matplotlib.pyplot as plt  # import matplotlib for chart plotting
 from utils import load_model, prepare_input  # import helper functions
 from errorLog import setup_logger  # import logger setup
 
-logger = setup_logger()  # initialize logger
+logger = setup_logger()  # create logger object
 
-st.set_page_config(  # configure streamlit page
+st.set_page_config(  # configure page settings
     page_title="Credit Card Default Prediction",  # set browser tab title
     layout="wide",  # use wide layout
-    initial_sidebar_state="collapsed"  # collapse sidebar by default
+    initial_sidebar_state="collapsed"  # keep sidebar collapsed
 )
 
-st.markdown(  # add custom css for dark premium layout
+st.markdown(  # add custom css for dark theme and polished layout
     """
     <style>
     .stApp {
-        background: linear-gradient(180deg, #071224 0%, #0f2747 55%, #16345a 100%);
+        background: linear-gradient(180deg, #071224 0%, #0e2749 55%, #163b66 100%);
         color: #e5e7eb;
     }
 
@@ -30,8 +30,8 @@ st.markdown(  # add custom css for dark premium layout
     }
 
     .block-container {
-        max-width: 1320px;
-        padding-top: 1.2rem;
+        max-width: 1380px;
+        padding-top: 1rem;
         padding-bottom: 2rem;
     }
 
@@ -40,65 +40,63 @@ st.markdown(  # add custom css for dark premium layout
     }
 
     .hero-card {
-        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #38bdf8 100%);
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%);
         border-radius: 28px;
-        padding: 2rem 2.2rem;
+        padding: 1.8rem 2rem;
         box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
-        margin-bottom: 1.4rem;
+        margin-bottom: 1.2rem;
     }
 
     .hero-title {
-        font-size: 2.7rem;
+        font-size: 2.5rem;
         font-weight: 800;
         color: #ffffff;
-        margin-bottom: 0.55rem;
+        margin-bottom: 0.5rem;
     }
 
     .hero-subtitle {
-        font-size: 1.05rem;
-        line-height: 1.65;
+        font-size: 1.03rem;
+        line-height: 1.6;
         color: rgba(255, 255, 255, 0.92);
         margin: 0;
     }
 
+    .card-title {
+        color: #f8fafc;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
     .metric-card {
-        background: linear-gradient(135deg, rgba(31, 41, 55, 0.92) 0%, rgba(15, 23, 42, 0.96) 100%);
+        background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
         border: 1px solid rgba(148, 163, 184, 0.22);
         border-radius: 24px;
-        padding: 1.5rem 1.2rem;
+        padding: 1.25rem 1rem;
         text-align: center;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-        min-height: 114px;
+        margin-bottom: 1rem;
     }
 
     .metric-label {
         color: #a5b4fc;
         font-size: 1rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.7rem;
     }
 
     .metric-value {
         color: #f8fafc;
-        font-size: 1.95rem;
+        font-size: 2rem;
         font-weight: 800;
         margin: 0;
     }
 
-    .panel-card {
-        background: linear-gradient(135deg, rgba(31, 41, 55, 0.92) 0%, rgba(15, 23, 42, 0.96) 100%);
-        border: 1px solid rgba(148, 163, 184, 0.22);
-        border-radius: 24px;
-        padding: 1.35rem 1.25rem;
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-        margin-top: 0.4rem;
-        margin-bottom: 1rem;
-    }
-
-    .panel-title {
+    .section-heading {
         color: #f8fafc;
-        font-size: 1.45rem;
+        font-size: 1.2rem;
         font-weight: 800;
-        margin-bottom: 1rem;
+        margin-top: 0.4rem;
+        margin-bottom: 0.8rem;
     }
 
     .result-good {
@@ -156,7 +154,7 @@ st.markdown(  # add custom css for dark premium layout
 
     div[data-baseweb="input"] > div,
     div[data-baseweb="select"] > div {
-        background-color: #0b1730 !important;
+        background-color: #08162f !important;
         border: 1px solid #334155 !important;
         border-radius: 12px !important;
         color: #e5e7eb !important;
@@ -167,8 +165,8 @@ st.markdown(  # add custom css for dark premium layout
     }
 
     .stSlider [data-baseweb="slider"] {
-        padding-top: 0.45rem;
-        padding-bottom: 0.45rem;
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
     }
 
     [data-testid="stDataFrame"] {
@@ -181,16 +179,12 @@ st.markdown(  # add custom css for dark premium layout
     [data-testid="stAlert"] {
         border-radius: 14px;
     }
-
-    .small-space {
-        height: 0.35rem;
-    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown(  # render hero section
+st.markdown(  # render top hero section
     """
     <div class="hero-card">
         <div class="hero-title">Credit Card Default Prediction System</div>
@@ -203,9 +197,54 @@ st.markdown(  # render hero section
     unsafe_allow_html=True
 )
 
-left_space, metric_col1, metric_col2, metric_col3 = st.columns([0.18, 1, 1, 1])  # create left-aligned metric layout
+base_dir = os.path.dirname(os.path.abspath(__file__))  # get current file directory
+root_dir = os.path.abspath(os.path.join(base_dir, ".."))  # move to project root
+model_path = os.path.join(root_dir, "model", "random_forest_model.pkl")  # build model file path
+features_path = os.path.join(root_dir, "model", "model_features.pkl")  # build features file path
 
-with metric_col1:  # render first metric card
+try:  # load model and features safely
+    model, feature_names = load_model(model_path, features_path)
+except Exception as e:  # catch loading errors
+    logger.error(f"Error loading model or feature names: {e}")
+    st.error(f"Model loading failed: {e}")
+    st.stop()
+
+top_left, top_right = st.columns([1.8, 1.15], gap="large")  # create top row with form on left and metrics on right
+
+with top_left:  # left side form section
+    st.markdown('<div class="card-title">Customer Information</div>', unsafe_allow_html=True)  # show form title
+
+    left_num, right_num = st.columns(2, gap="medium")  # create two columns for numeric inputs
+
+    with left_num:  # first numeric input column
+        LIMIT_BAL = st.number_input("Credit Limit", min_value=0.0, value=50000.0, step=1000.0)  # input credit limit
+        AGE = st.number_input("Age", min_value=18, value=30, step=1)  # input age
+        PAY_0 = st.number_input("Recent Payment Status PAY_0", min_value=-1, max_value=6, value=0, step=1)  # input recent payment status
+        AVG_BILL_AMT = st.number_input("Average Bill Amount", min_value=0.0, value=10000.0, step=500.0)  # input average bill amount
+        AVG_PAY_AMT = st.number_input("Average Payment Amount", min_value=0.0, value=5000.0, step=500.0)  # input average payment amount
+
+    with right_num:  # second numeric input column
+        TOTAL_DELAY_MONTHS = st.number_input("Total Delay Months", min_value=0, max_value=6, value=0, step=1)  # input delay months
+        MAX_DELAY = st.number_input("Maximum Delay", min_value=-1, max_value=6, value=0, step=1)  # input maximum delay
+        AVG_UTILIZATION = st.slider("Average Credit Utilization", min_value=0.0, max_value=1.0, value=0.30, step=0.01)  # input utilization
+        PAYMENT_RATIO = st.slider("Payment Ratio", min_value=0.0, max_value=2.0, value=0.50, step=0.01)  # input payment ratio
+
+    st.markdown('<div class="section-heading">Categorical Information</div>', unsafe_allow_html=True)  # show categorical section title
+
+    sex_col, education_col, marriage_col = st.columns(3, gap="medium")  # create three columns for select boxes
+
+    with sex_col:  # sex selectbox column
+        sex_choice = st.selectbox("Sex", ["Male", "Female"])  # input sex category
+
+    with education_col:  # education selectbox column
+        education_choice = st.selectbox("Education", ["Graduate School", "University", "High School", "Others"])  # input education category
+
+    with marriage_col:  # marriage selectbox column
+        marriage_choice = st.selectbox("Marriage", ["Married", "Single", "Others"])  # input marriage category
+
+    predict_btn = st.button("Predict Default Risk")  # prediction button below form
+
+with top_right:  # right side metrics section
     st.markdown(
         """
         <div class="metric-card">
@@ -214,9 +253,8 @@ with metric_col1:  # render first metric card
         </div>
         """,
         unsafe_allow_html=True
-    )
+    )  # render model metric card
 
-with metric_col2:  # render second metric card
     st.markdown(
         """
         <div class="metric-card">
@@ -225,9 +263,8 @@ with metric_col2:  # render second metric card
         </div>
         """,
         unsafe_allow_html=True
-    )
+    )  # render accuracy metric card
 
-with metric_col3:  # render third metric card
     st.markdown(
         """
         <div class="metric-card">
@@ -236,59 +273,7 @@ with metric_col3:  # render third metric card
         </div>
         """,
         unsafe_allow_html=True
-    )
-
-base_dir = os.path.dirname(os.path.abspath(__file__))  # get current file directory
-root_dir = os.path.abspath(os.path.join(base_dir, ".."))  # move to project root
-model_path = os.path.join(root_dir, "model", "random_forest_model.pkl")  # create model path
-features_path = os.path.join(root_dir, "model", "model_features.pkl")  # create features path
-
-try:  # load saved model and features
-    model, feature_names = load_model(model_path, features_path)
-except Exception as e:  # handle model loading error
-    logger.error(f"Error loading model or feature names: {e}")
-    st.error(f"Model loading failed: {e}")
-    st.stop()
-
-left_col, right_col = st.columns([1.35, 1])  # create main input layout
-
-with left_col:  # left side for numeric inputs
-    st.markdown('<div class="panel-card">', unsafe_allow_html=True)
-    st.markdown('<div class="panel-title">Customer Financial Profile</div>', unsafe_allow_html=True)
-
-    num_col1, num_col2 = st.columns(2)  # split numeric area into two columns
-
-    with num_col1:  # first numeric column
-        LIMIT_BAL = st.number_input("Credit Limit", min_value=0.0, value=50000.0, step=1000.0)
-        AGE = st.number_input("Age", min_value=18, value=30, step=1)
-        PAY_0 = st.number_input("Recent Payment Status PAY_0", min_value=-1, max_value=6, value=0, step=1)
-        AVG_BILL_AMT = st.number_input("Average Bill Amount", min_value=0.0, value=10000.0, step=500.0)
-        AVG_PAY_AMT = st.number_input("Average Payment Amount", min_value=0.0, value=5000.0, step=500.0)
-
-    with num_col2:  # second numeric column
-        TOTAL_DELAY_MONTHS = st.number_input("Total Delay Months", min_value=0, max_value=6, value=0, step=1)
-        MAX_DELAY = st.number_input("Maximum Delay", min_value=-1, max_value=6, value=0, step=1)
-        AVG_UTILIZATION = st.slider("Average Credit Utilization", min_value=0.0, max_value=1.0, value=0.30, step=0.01)
-        PAYMENT_RATIO = st.slider("Payment Ratio", min_value=0.0, max_value=2.0, value=0.50, step=0.01)
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with right_col:  # right side for categorical inputs and action
-    st.markdown('<div class="panel-card">', unsafe_allow_html=True)
-    st.markdown('<div class="panel-title">Categorical Information</div>', unsafe_allow_html=True)
-
-    sex_choice = st.selectbox("Sex", ["Male", "Female"])
-    education_choice = st.selectbox("Education", ["Graduate School", "University", "High School", "Others"])
-    marriage_choice = st.selectbox("Marriage", ["Married", "Single", "Others"])
-
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="panel-card">', unsafe_allow_html=True)
-    st.markdown('<div class="panel-title">Run Prediction</div>', unsafe_allow_html=True)
-
-    predict_btn = st.button("Predict Default Risk")
-
-    st.markdown('</div>', unsafe_allow_html=True)
+    )  # render target metric card
 
 SEX_2 = 1 if sex_choice == "Female" else 0  # encode sex
 EDUCATION_2 = 1 if education_choice == "University" else 0  # encode university
@@ -297,9 +282,9 @@ EDUCATION_4 = 1 if education_choice == "Others" else 0  # encode others educatio
 MARRIAGE_2 = 1 if marriage_choice == "Single" else 0  # encode single
 MARRIAGE_3 = 1 if marriage_choice == "Others" else 0  # encode others marriage
 
-if predict_btn:  # run prediction after button click
+if predict_btn:  # run prediction when button is clicked
     try:
-        input_data = {  # collect model input data
+        input_data = {  # collect user inputs
             "LIMIT_BAL": LIMIT_BAL,
             "AGE": AGE,
             "PAY_0": PAY_0,
@@ -317,14 +302,13 @@ if predict_btn:  # run prediction after button click
             "MARRIAGE_3": MARRIAGE_3
         }
 
-        input_df = prepare_input(input_data, feature_names)  # align input with training features
-        prediction = model.predict(input_df)[0]  # get class prediction
-        probability = model.predict_proba(input_df)[0][1]  # get default class probability
+        input_df = prepare_input(input_data, feature_names)  # align input dataframe with model features
+        prediction = model.predict(input_df)[0]  # generate class prediction
+        probability = model.predict_proba(input_df)[0][1]  # generate probability for default class
 
-        st.markdown('<div class="panel-card">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-title">Prediction Result</div>', unsafe_allow_html=True)
+        st.markdown('<div class="card-title">Prediction Result</div>', unsafe_allow_html=True)  # show result title
 
-        if probability < 0.30:  # low risk band
+        if probability < 0.30:  # low risk result
             st.markdown(
                 f"""
                 <div class="result-good">
@@ -334,8 +318,8 @@ if predict_btn:  # run prediction after button click
                 """,
                 unsafe_allow_html=True
             )
-            interpretation = "This customer appears to have relatively low default risk."
-        elif probability < 0.60:  # moderate risk band
+            interpretation = "This customer appears to have relatively low default risk."  # low risk interpretation
+        elif probability < 0.60:  # moderate risk result
             st.markdown(
                 f"""
                 <div class="result-medium">
@@ -345,8 +329,8 @@ if predict_btn:  # run prediction after button click
                 """,
                 unsafe_allow_html=True
             )
-            interpretation = "This customer appears to have moderate default risk."
-        else:  # high risk band
+            interpretation = "This customer appears to have moderate default risk."  # moderate risk interpretation
+        else:  # high risk result
             st.markdown(
                 f"""
                 <div class="result-high">
@@ -356,29 +340,29 @@ if predict_btn:  # run prediction after button click
                 """,
                 unsafe_allow_html=True
             )
-            interpretation = "This customer appears to have high default risk."
+            interpretation = "This customer appears to have high default risk."  # high risk interpretation
 
-        st.subheader("Risk Interpretation")  # show interpretation title
-        st.write(interpretation)  # render interpretation text
+        st.subheader("Risk Interpretation")  # show interpretation heading
+        st.write(interpretation)  # display interpretation text
 
-        st.subheader("Input Summary")  # show input summary title
+        st.subheader("Input Summary")  # show input summary heading
         st.dataframe(input_df, use_container_width=True)  # display input dataframe
 
-        if hasattr(model, "feature_importances_"):  # render chart for models that support importance
-            importance_df = pd.DataFrame(
+        if hasattr(model, "feature_importances_"):  # check whether feature importance exists
+            importance_df = pd.DataFrame(  # create feature importance dataframe
                 {
                     "Feature": feature_names,
                     "Importance": model.feature_importances_
                 }
-            ).sort_values(by="Importance", ascending=False).head(10)
+            ).sort_values(by="Importance", ascending=False).head(10)  # sort and keep top 10
 
-            st.subheader("Top 10 Important Features")  # show chart title
+            st.subheader("Top 10 Important Features")  # show feature importance heading
 
-            fig, ax = plt.subplots(figsize=(10, 5))  # create figure
-            ax.barh(importance_df["Feature"][::-1], importance_df["Importance"][::-1])  # draw horizontal bars
+            fig, ax = plt.subplots(figsize=(10, 5))  # create plot figure
+            ax.barh(importance_df["Feature"][::-1], importance_df["Importance"][::-1])  # draw horizontal bar chart
             ax.set_title("Top 10 Important Features")  # set chart title
-            ax.set_xlabel("Importance Score")  # set x label
-            ax.set_ylabel("Feature")  # set y label
+            ax.set_xlabel("Importance Score")  # set x axis label
+            ax.set_ylabel("Feature")  # set y axis label
             fig.patch.set_facecolor("#0f172a")  # set figure background
             ax.set_facecolor("#0f172a")  # set axes background
             ax.tick_params(axis="x", colors="#e5e7eb")  # style x ticks
@@ -386,11 +370,9 @@ if predict_btn:  # run prediction after button click
             ax.xaxis.label.set_color("#e5e7eb")  # style x label
             ax.yaxis.label.set_color("#e5e7eb")  # style y label
             ax.title.set_color("#f8fafc")  # style title
-            for spine in ax.spines.values():  # style border lines
-                spine.set_color("#334155")
+            for spine in ax.spines.values():  # loop through plot borders
+                spine.set_color("#334155")  # set border color
             st.pyplot(fig)  # display chart
-
-        st.markdown('</div>', unsafe_allow_html=True)
 
     except Exception as e:  # handle prediction errors
         logger.error(f"Prediction error: {e}")
