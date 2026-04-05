@@ -41,7 +41,7 @@ st.markdown(  # inject custom CSS for dark theme and improved layout
     }
 
     .hero-card {
-        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #06b6d4 100%);
+        background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #1f3864 100%);
         padding: 2rem;
         border-radius: 24px;
         color: white;
@@ -250,7 +250,7 @@ except Exception as e:  # catch loading errors
 left_col, right_col = st.columns([1.3, 1])  # create two main columns for inputs
 
 with left_col:  # left side for numeric features
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)  # open financial profile card
+   
     st.markdown('<div class="section-title">Customer Financial Profile</div>', unsafe_allow_html=True)  # add card title
 
     num_col1, num_col2 = st.columns(2)  # create two columns inside financial profile section
@@ -271,7 +271,7 @@ with left_col:  # left side for numeric features
     st.markdown('</div>', unsafe_allow_html=True)  # close financial profile card
 
 with right_col:  # right side for categorical features and action button
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)  # open categorical card
+    
     st.markdown('<div class="section-title">Categorical Information</div>', unsafe_allow_html=True)  # add card title
 
     sex_choice = st.selectbox("Sex", ["Male", "Female"])  # input sex category
@@ -280,7 +280,7 @@ with right_col:  # right side for categorical features and action button
 
     st.markdown('</div>', unsafe_allow_html=True)  # close categorical card
 
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)  # open action card
+   
     st.markdown('<div class="section-title">Run Prediction</div>', unsafe_allow_html=True)  # add action title
     predict_btn = st.button("Predict Default Risk")  # create prediction button
     st.markdown('</div>', unsafe_allow_html=True)  # close action card
@@ -316,7 +316,7 @@ if predict_btn:  # run prediction only when button is clicked
         prediction = model.predict(input_df)[0]  # get class prediction from model
         probability = model.predict_proba(input_df)[0][1]  # get default probability for class 1
 
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)  # open results card
+       
         st.markdown('<div class="section-title">Prediction Result</div>', unsafe_allow_html=True)  # add result section title
 
         if probability < 0.30:  # check low risk range
