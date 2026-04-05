@@ -38,19 +38,17 @@ st.markdown("""
 }
 
 .metric-card {
-    background: white;
+    background: linear-gradient(135deg, #e0ecff 0%, #f0f7ff 100%);
     border-radius: 20px;
     padding: 1.2rem;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-    text-align: center;
 }
 
 .section-card {
-    background: white;
+    background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
     border-radius: 22px;
     padding: 1.4rem;
     box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
-    margin-bottom: 1.2rem;
 }
 
 .stButton > button {
@@ -125,7 +123,6 @@ left, right = st.columns([1.2, 1])
 
 # left column for numeric inputs
 with left:
-    st.markdown('<div class="section-card">', unsafe_allow_html=True)
     st.subheader("Customer Financial Profile")
 
     # create sub columns for better layout
