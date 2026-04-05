@@ -1,150 +1,192 @@
-# import os to build safe file paths
-import os
+import os  # used to handle file paths safely across systems
+import streamlit as st  # main library for building the web app
+import pandas as pd  # used for handling tabular data
+import matplotlib.pyplot as plt  # used for plotting feature importance
+from utils import load_model, prepare_input  # custom functions for model loading and input prep
+from errorLog import setup_logger  # custom logger setup
 
-# import streamlit to create the web app
-import streamlit as st
+logger = setup_logger()  # initialize logger for error tracking
 
-# import pandas to handle tabular data
-import pandas as pd
-
-# import matplotlib for the feature importance chart
-import matplotlib.pyplot as plt
-
-# import helper functions from utils.py
-from utils import load_model, prepare_input
-
-# import logger setup from errorLog.py
-from errorLog import setup_logger
-
-
-# create logger object
-logger = setup_logger()
-
-
-# configure page settings
-st.set_page_config(page_title="Credit Card Default Prediction", layout="wide")
-
-
-# show app title
-st.title("Credit Card Default Prediction System")
-
-# show short project description
-st.write(
-    "This application predicts whether a customer is likely to default on credit card payment "
-    "using the trained Random Forest model."
+# configure the page layout and metadata
+st.set_page_config(
+    page_title="Credit Card Default Prediction",  # title shown in browser tab
+    page_icon="💳",  # icon shown in tab
+    layout="wide",  # use full screen width
+    initial_sidebar_state="collapsed"  # hide sidebar by default
 )
 
-# show model information
-st.subheader("Model Information")
-st.write("Selected model: Random Forest")
-st.write("Model accuracy: 0.82")
+# inject custom CSS styling to improve UI design
+st.markdown("""
+<style>
+.main {
+    background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+}
 
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 1280px;
+}
 
-# get the folder where this app.py file is located
+.hero-card {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 55%, #38bdf8 100%);
+    padding: 2rem;
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 18px 45px rgba(37, 99, 235, 0.22);
+    margin-bottom: 1.5rem;
+}
+
+.metric-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.2rem;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    text-align: center;
+}
+
+.section-card {
+    background: white;
+    border-radius: 22px;
+    padding: 1.4rem;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+    margin-bottom: 1.2rem;
+}
+
+.stButton > button {
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: white;
+    font-weight: 700;
+    border-radius: 14px;
+    padding: 0.75rem;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# display header section with title and description
+st.markdown("""
+<div class="hero-card">
+    <h2>Credit Card Default Prediction System</h2>
+    <p>This application predicts whether a customer is likely to default using a trained Random Forest model.</p>
+</div>
+""", unsafe_allow_html=True)
+
+# create three columns for top metrics
+m1, m2, m3 = st.columns(3)
+
+# show model name
+with m1:
+    st.markdown("""
+    <div class="metric-card">
+        <p>Model</p>
+        <h3>Random Forest</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+# show accuracy
+with m2:
+    st.markdown("""
+    <div class="metric-card">
+        <p>Accuracy</p>
+        <h3>0.82</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+# show prediction target
+with m3:
+    st.markdown("""
+    <div class="metric-card">
+        <p>Target</p>
+        <h3>Default Risk</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+# locate current file directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# go one level up to the project root folder
+# move to project root directory
 project_root = os.path.abspath(os.path.join(current_dir, ".."))
 
-# create full path for the saved model file
+# build model file path
 model_path = os.path.join(project_root, "model", "random_forest_model.pkl")
 
-# create full path for the saved feature names file
+# build feature file path
 features_path = os.path.join(project_root, "model", "model_features.pkl")
 
-
-# load model and feature names safely
+# safely load model and features
 try:
     model, feature_names = load_model(model_path, features_path)
-
 except Exception as e:
-    logger.error(f"Error loading model or feature names: {e}")
-    st.error("Error loading model files")
-    st.write("Model path:", model_path)
-    st.write("Features path:", features_path)
-    st.write("Model exists:", os.path.exists(model_path))
-    st.write("Features exist:", os.path.exists(features_path))
-    st.stop()
+    logger.error(f"Error loading model: {e}")  # log error
+    st.error("Model loading failed")  # show error to user
+    st.stop()  # stop execution
 
+# create layout with two columns
+left, right = st.columns([1.2, 1])
 
-# create input section title
-st.subheader("Enter Customer Information")
+# left column for numeric inputs
+with left:
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.subheader("Customer Financial Profile")
 
+    # create sub columns for better layout
+    c1, c2 = st.columns(2)
 
-# create two columns for numeric input fields
-col1, col2 = st.columns(2)
+    # first column inputs
+    with c1:
+        LIMIT_BAL = st.number_input("Credit Limit", value=50000.0)
+        AGE = st.number_input("Age", value=30)
+        PAY_0 = st.number_input("Recent Payment Status", value=0)
+        AVG_BILL_AMT = st.number_input("Average Bill Amount", value=10000.0)
+        AVG_PAY_AMT = st.number_input("Average Payment Amount", value=5000.0)
 
+    # second column inputs
+    with c2:
+        TOTAL_DELAY_MONTHS = st.number_input("Total Delay Months", value=0)
+        MAX_DELAY = st.number_input("Maximum Delay", value=0)
+        AVG_UTILIZATION = st.slider("Credit Utilization", 0.0, 1.0, 0.3)
+        PAYMENT_RATIO = st.slider("Payment Ratio", 0.0, 2.0, 0.5)
 
-# first column inputs
-with col1:
-    LIMIT_BAL = st.number_input("Credit Limit", min_value=0.0, value=50000.0)
-    AGE = st.number_input("Age", min_value=18, value=30)
-    PAY_0 = st.number_input("Recent Payment Status PAY_0 (-1 to 6)", min_value=-1, max_value=6, value=0)
-    AVG_BILL_AMT = st.number_input("Average Bill Amount", min_value=0.0, value=10000.0)
-    AVG_PAY_AMT = st.number_input("Average Payment Amount", min_value=0.0, value=5000.0)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# second column inputs
-with col2:
-    TOTAL_DELAY_MONTHS = st.number_input("Total Delay Months", min_value=0, max_value=6, value=0)
-    MAX_DELAY = st.number_input("Maximum Delay", min_value=-1, max_value=6, value=0)
-    AVG_UTILIZATION = st.number_input(
-        "Average Credit Utilization (0 to 1, where 0.3 means 30%)",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.3
-    )
-    PAYMENT_RATIO = st.number_input(
-        "Payment Ratio (0 to 2)",
-        min_value=0.0,
-        max_value=2.0,
-        value=0.5
-    )
+# right column for categorical inputs and button
+with right:
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+    st.subheader("Categorical Information")
 
-
-# create section for categorical variables
-st.subheader("Categorical Information")
-
-
-# create three columns for categorical inputs
-col3, col4, col5 = st.columns(3)
-
-
-# sex input
-with col3:
+    # dropdown for sex
     sex_choice = st.selectbox("Sex", ["Male", "Female"])
 
-# education input
-with col4:
+    # dropdown for education
     education_choice = st.selectbox(
         "Education",
         ["Graduate School", "University", "High School", "Others"]
     )
 
-# marriage input
-with col5:
+    # dropdown for marriage
     marriage_choice = st.selectbox(
         "Marriage",
         ["Married", "Single", "Others"]
     )
 
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# convert sex into encoded value
+    # prediction button
+    predict_btn = st.button("Predict Default Risk")
+
+# encode categorical values into numeric format
 SEX_2 = 1 if sex_choice == "Female" else 0
-
-# convert education into encoded values
 EDUCATION_2 = 1 if education_choice == "University" else 0
 EDUCATION_3 = 1 if education_choice == "High School" else 0
 EDUCATION_4 = 1 if education_choice == "Others" else 0
-
-# convert marriage into encoded values
 MARRIAGE_2 = 1 if marriage_choice == "Single" else 0
 MARRIAGE_3 = 1 if marriage_choice == "Others" else 0
 
-
-# create prediction button
-if st.button("Predict Default Risk"):
+# run prediction when button is clicked
+if predict_btn:
     try:
-        # collect all inputs into a dictionary
+        # collect all inputs into dictionary
         input_data = {
             "LIMIT_BAL": LIMIT_BAL,
             "AGE": AGE,
@@ -163,63 +205,36 @@ if st.button("Predict Default Risk"):
             "MARRIAGE_3": MARRIAGE_3
         }
 
-        # prepare input in the same format as training features
+        # convert input into model-compatible format
         input_df = prepare_input(input_data, feature_names)
 
-        # generate class prediction
+        # get prediction result
         prediction = model.predict(input_df)[0]
 
-        # generate probability for default class
+        # get probability of default
         probability = model.predict_proba(input_df)[0][1]
 
-        # show result section
+        # display results
         st.subheader("Prediction Result")
+        st.success(f"Default probability: {probability:.2%}")
 
-        # display prediction output
-        if prediction == 1:
-            st.error("Customer is likely to default")
-        else:
-            st.success("Customer is not likely to default")
-
-        # display default probability
-        st.write(f"Default probability: {probability:.2%}")
-
-        # show risk interpretation
-        st.subheader("Risk Interpretation")
-
-        if probability < 0.30:
-            st.write("This customer appears to have low default risk.")
-        elif probability < 0.60:
-            st.write("This customer appears to have moderate default risk.")
-        else:
-            st.write("This customer appears to have high default risk.")
-
-        # show user input summary
+        # show input summary table
         st.subheader("Input Summary")
         st.dataframe(input_df)
 
-        # create dataframe for feature importance
-        importance_df = pd.DataFrame({
-            "Feature": feature_names,
-            "Importance": model.feature_importances_
-        })
+        # show feature importance if available
+        if hasattr(model, "feature_importances_"):
+            importance_df = pd.DataFrame({
+                "Feature": feature_names,
+                "Importance": model.feature_importances_
+            }).sort_values(by="Importance", ascending=False).head(10)
 
-        # sort and keep top 10 important features
-        importance_df = importance_df.sort_values(by="Importance", ascending=False).head(10)
+            st.subheader("Top 10 Important Features")
 
-        # display feature importance section
-        st.subheader("Top 10 Important Features")
-
-        # create chart
-        fig, ax = plt.subplots()
-        ax.bar(importance_df["Feature"], importance_df["Importance"])
-        ax.set_title("Top 10 Important Features")
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-
-        # show chart in streamlit
-        st.pyplot(fig)
+            fig, ax = plt.subplots()
+            ax.barh(importance_df["Feature"][::-1], importance_df["Importance"][::-1])
+            st.pyplot(fig)
 
     except Exception as e:
-        logger.error(f"Prediction error: {e}")
-        st.error("An error occurred during prediction")
+        logger.error(f"Prediction error: {e}")  # log error
+        st.error("Prediction failed")  # show error message
