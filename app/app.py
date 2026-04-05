@@ -180,14 +180,14 @@ st.markdown(  # add custom css for dark theme and polished layout
         border-radius: 14px;
     }
     
-    {
-        color: black !important;
-    } div[data-baseweb="popover"],
+    div[data-baseweb="popover"],
     div[data-baseweb="popover"] * ,
     ul[role="listbox"],
     ul[role="listbox"] *,
     li[role="option"],
-    li[role="option"] *
+    li[role="option"] * {
+        color: black !important;
+    }
 
     ul[role="listbox"],
     li[role="option"] {
