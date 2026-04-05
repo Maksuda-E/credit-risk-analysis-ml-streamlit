@@ -184,14 +184,9 @@ st.markdown(  # add custom css for dark theme and polished layout
         color: black !important;
     }
 
-    /* Fix selected value text */
-    div[data-baseweb="select"] div {
-        color: #e5e7eb !important;
-    }
-
-    /* Fix dropdown menu background */
-    div[data-baseweb="popover"] {
-        background-color: white !important;
+    div[data-baseweb="menu"] li {
+    color: black !important;
+    background-color: white !important;
     }
     </style>
     """,
