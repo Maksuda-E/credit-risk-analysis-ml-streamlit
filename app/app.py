@@ -290,8 +290,7 @@ MARRIAGE_2 = 1 if marriage_choice == "Single" else 0
 MARRIAGE_3 = 1 if marriage_choice == "Others" else 0
 
 with main_right:
-    st.markdown('<div class="panel">', unsafe_allow_html=True)
-
+    
     st.markdown(
         """
         <div class="side-card">
