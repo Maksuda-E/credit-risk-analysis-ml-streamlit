@@ -179,6 +179,20 @@ st.markdown(  # add custom css for dark theme and polished layout
     [data-testid="stAlert"] {
         border-radius: 14px;
     }
+    /* Fix dropdown option text color */
+    div[data-baseweb="select"] ul li {
+        color: black !important;
+    }
+
+    /* Fix selected value text */
+    div[data-baseweb="select"] div {
+        color: #e5e7eb !important;
+    }
+
+    /* Fix dropdown menu background */
+    div[data-baseweb="popover"] {
+        background-color: white !important;
+    }
     </style>
     """,
     unsafe_allow_html=True
