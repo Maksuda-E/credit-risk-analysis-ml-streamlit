@@ -280,17 +280,6 @@ with top_right:  # right side metrics section
         """,
         unsafe_allow_html=True
     )  # render model metric card
-
-    st.markdown(
-        """
-        <div class="metric-card">
-            <div class="metric-label">Accuracy</div>
-            <div class="metric-value">0.82</div>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )  # render accuracy metric card
-
     st.markdown(
         """
         <div class="metric-card">
