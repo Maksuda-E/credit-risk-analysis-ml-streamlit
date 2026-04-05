@@ -62,7 +62,7 @@ st.markdown(  # add custom css for dark theme and polished layout
     }
 
     .card-title {
-        color: black;
+        color: #f8fafc;
         font-size: 1.8rem;
         font-weight: 800;
         margin-bottom: 1rem;
@@ -79,7 +79,7 @@ st.markdown(  # add custom css for dark theme and polished layout
     }
 
     .metric-label {
-        color: #a5b4fc;
+        color: black;
         font-size: 1rem;
         margin-bottom: 0.7rem;
     }
