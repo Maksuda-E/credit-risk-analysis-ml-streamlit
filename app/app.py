@@ -37,9 +37,9 @@ st.markdown(
     .hero-card {
         background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #38bdf8 100%);
         border-radius: 18px;
-        padding: 2rem 2.2rem;
+        padding: 1rem 1.2rem;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.30);
-        margin-bottom: 1.4rem;
+        margin-bottom: 1 rem;
     }
 
     .hero-title {
