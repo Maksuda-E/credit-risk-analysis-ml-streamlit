@@ -230,7 +230,6 @@ with p3:
 with p4:
     st.markdown('<div class="perf-card"><div class="perf-label">F1 Score</div><div class="perf-value">0.79</div></div>', unsafe_allow_html=True)
 
-st.markdown("<div style='height: 1rem;'></div>", unsafe_allow_html=True)
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(base_dir, ".."))
