@@ -105,10 +105,10 @@ st.markdown(
     .side-card {
         background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #38bdf8 100%);
         border-radius: 22px;
-        padding: 1.2rem 1rem;
+        padding: 1rem 0.5rem;
         text-align: center;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .side-label {
