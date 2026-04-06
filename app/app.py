@@ -2,7 +2,7 @@ import os
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from utils import load_model, prepare_input
+from utils import load_model, prepare_input, transform_input
 from errorLog import setup_logger
 
 logger = setup_logger()
@@ -236,13 +236,14 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(base_dir, ".."))
 model_path = os.path.join(root_dir, "model", "random_forest_model.pkl")
 features_path = os.path.join(root_dir, "model", "model_features.pkl")
+scaler_path = os.path.join(root_dir, "model", "scaler.pkl")
 
 @st.cache_resource
-def get_model(model_path_arg, features_path_arg):
-    return load_model(model_path_arg, features_path_arg)
+def get_model(model_path_arg, features_path_arg, scaler_path_arg):
+    return load_model(model_path_arg, features_path_arg, scaler_path_arg)
 
 try:
-    model, feature_names = get_model(model_path, features_path)
+    model, feature_names, scaler = get_model(model_path, features_path, scaler_path)
 except Exception as e:
     logger.error(f"Error loading model or feature names: {e}")
     st.error(f"Model loading failed: {e}")
@@ -338,6 +339,7 @@ if predict_btn:
         }
 
         input_df = prepare_input(input_data, feature_names)
+        model_input = transform_input(input_df, scaler)
         probability = model.predict_proba(input_df)[0][1]
 
         if probability < 0.35:
