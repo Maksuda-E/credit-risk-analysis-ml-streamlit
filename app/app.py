@@ -345,7 +345,7 @@ if predict_btn:
         logger.debug(f"Prepared input: {input_df.to_dict()}")
         
         model_input = transform_input(input_df, scaler)
-        logger.debug(f"Transformed input: {model_input.tolist()}")
+        logger.debug(f"Transformed input: {model_input.to_dict()}")
 
         probability = model.predict_proba(input_df)[0][1]
         logger.info(f"Prediction probability: {probability}")
