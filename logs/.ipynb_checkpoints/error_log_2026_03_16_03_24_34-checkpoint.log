@@ -1,1 +1,0 @@
-2026-03-16 03:27:56,385 - ERROR - Error loading model: [Errno 2] No such file or directory: '../model/random_forest_model_wrong.pkl'
