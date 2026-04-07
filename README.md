@@ -110,6 +110,18 @@ The Streamlit app allows users to:
 
 This makes the model easier to interact with and demonstrates a practical use case for credit risk prediction.
 
+
+## Run the Application
+
+### Install dependencies:
+
+pip install -r requirements.txt
+
+### Run the app:
+
+python -m streamlit run app/app.py
+
+
 ## Technologies Used
 
 Python
@@ -123,3 +135,14 @@ Matplotlib
 Joblib
 
 Streamlit
+
+## Project Structure
+credit-risk-analysis-ml-streamlit/
+│
+├── app/                # Streamlit application files
+├── dataset/            # Raw and cleaned datasets
+├── model/              # Trained model and scaler files
+├── notebook/           # Jupyter notebooks (EDA, preprocessing, log for preprocessing, model)
+├── logs/               # Log files for error tracking and recording 
+├── requirements.txt    # Project dependencies
+└── README.md           # Project documentation
