@@ -137,6 +137,7 @@ Joblib
 Streamlit
 
 ## Project Structure
+```text
 credit-risk-analysis-ml-streamlit/
 │
 ├── app/                # Streamlit application files
