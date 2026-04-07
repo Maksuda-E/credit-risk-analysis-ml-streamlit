@@ -14,7 +14,7 @@ def setup_logger():
     logger = logging.getLogger("credit_risk_app")
 
     # set the logging level to INFO so it captures info, warnings, and errors
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     # check if handlers already exist to avoid duplicate logs
     if not logger.handlers:

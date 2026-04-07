@@ -143,11 +143,11 @@ def build_input_data(
 # define a function that converts probability into a human-friendly risk label
 def get_risk_label(probability):
     # return low risk for probabilities below 0.30
-    if probability < 0.30:
+    if probability < 0.35:
         return "Low Risk"
 
     # return moderate risk for probabilities below 0.60
-    if probability < 0.60:
+    if probability < 0.55:
         return "Moderate Risk"
 
     # otherwise return high risk

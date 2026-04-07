@@ -319,6 +319,7 @@ with main_right:
     st.markdown('</div>', unsafe_allow_html=True)
 
 if predict_btn:
+    logger.info("Prediction triggered")
     try:
         input_data = {
             "LIMIT_BAL": LIMIT_BAL,
@@ -337,10 +338,17 @@ if predict_btn:
             "MARRIAGE_2": MARRIAGE_2,
             "MARRIAGE_3": MARRIAGE_3
         }
-
+        
+        logger.debug(f"Raw input: {input_data}")
+        
         input_df = prepare_input(input_data, feature_names)
+        logger.debug(f"Prepared input: {input_df.to_dict()}")
+        
         model_input = transform_input(input_df, scaler)
+        logger.debug(f"Transformed input: {model_input.tolist()}")
+
         probability = model.predict_proba(input_df)[0][1]
+        logger.info(f"Prediction probability: {probability}")
 
         if probability < 0.35:
             result_placeholder.markdown(
@@ -348,7 +356,7 @@ if predict_btn:
                 unsafe_allow_html=True
             )
             interpretation_placeholder.markdown("**Risk Interpretation:** This customer appears to have relatively low default risk.")
-        elif probability < 0.48:
+        elif probability < 0.55:
             result_placeholder.markdown(
                 f'<div class="result-box result-medium">Customer appears to have moderate default risk<br>Default probability: {probability:.2%}</div>',
                 unsafe_allow_html=True
